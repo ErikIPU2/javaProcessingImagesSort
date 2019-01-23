@@ -10,13 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import processing.core.PApplet;
 import processingPrograms.BubbleSortImage;
+import processingPrograms.InsertionSortImage;
+import processingPrograms.SelectionSortImage;
+import processingPrograms.CombSortImage;
 
 /**
  *
@@ -49,6 +51,9 @@ public class MainFrame extends javax.swing.JFrame {
         ButtonPanel = new javax.swing.JPanel();
         StartBtn = new javax.swing.JButton();
         ExitBtn = new javax.swing.JButton();
+        FPSPanel = new javax.swing.JPanel();
+        FPSSlider = new javax.swing.JSlider();
+        FPSShowLabel = new javax.swing.JLabel();
         MenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
 
@@ -87,7 +92,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         MethodSelectPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Método de ordenação"));
 
-        MethodSelectComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bubble Sort" }));
+        MethodSelectComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bubble Sort", "Selection Sort", "Insertion Sort" }));
 
         javax.swing.GroupLayout MethodSelectPanelLayout = new javax.swing.GroupLayout(MethodSelectPanel);
         MethodSelectPanel.setLayout(MethodSelectPanelLayout);
@@ -127,7 +132,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(ButtonPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(StartBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
                 .addComponent(ExitBtn)
                 .addContainerGap())
         );
@@ -141,16 +146,53 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        FPSPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Velocidade(FPS)"));
+
+        FPSSlider.setMaximum(10000);
+        FPSSlider.setMinimum(1);
+        FPSSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                FPSSliderStateChanged(evt);
+            }
+        });
+
+        FPSShowLabel.setText("60 FPS");
+
+        javax.swing.GroupLayout FPSPanelLayout = new javax.swing.GroupLayout(FPSPanel);
+        FPSPanel.setLayout(FPSPanelLayout);
+        FPSPanelLayout.setHorizontalGroup(
+            FPSPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(FPSPanelLayout.createSequentialGroup()
+                .addGroup(FPSPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(FPSPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(FPSSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(FPSPanelLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(FPSShowLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        FPSPanelLayout.setVerticalGroup(
+            FPSPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(FPSPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(FPSSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(FPSShowLabel)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout LayoutPanelLayout = new javax.swing.GroupLayout(LayoutPanel);
         LayoutPanel.setLayout(LayoutPanelLayout);
         LayoutPanelLayout.setHorizontalGroup(
             LayoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LayoutPanelLayout.createSequentialGroup()
+            .addGroup(LayoutPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(LayoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(MethodSelectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ImageSelectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(LayoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ButtonPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ImageSelectPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(MethodSelectPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(FPSPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         LayoutPanelLayout.setVerticalGroup(
@@ -159,10 +201,12 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(ImageSelectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(FPSPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(MethodSelectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jMenu1.setText("File");
@@ -190,11 +234,31 @@ public class MainFrame extends javax.swing.JFrame {
         }
         else {
             String sortOption = (String) MethodSelectComboBox.getSelectedItem();
+            String path = ImagePathInput.getText();
             switch (sortOption) {
                 case "Bubble Sort":
                     BubbleSortImage bubbleSortImage = new BubbleSortImage();
-                    bubbleSortImage.setImagePath(ImagePathInput.getText());
+                    bubbleSortImage.setImagePath(path);
+                    bubbleSortImage.setFrameRate(FPSSlider.getValue());
                     bubbleSortImage.startSort();
+                    break;
+                case "Selection Sort":
+                    SelectionSortImage selectionSortImage = new SelectionSortImage();
+                    selectionSortImage.setImagePath(path);
+                    selectionSortImage.setFrameRate(FPSSlider.getValue());
+                    selectionSortImage.startSort();
+                    break;
+                case "Insertion Sort":
+                    InsertionSortImage insertionSortImage = new InsertionSortImage();
+                    insertionSortImage.setImagePath(path);
+                    insertionSortImage.setFrameRate(FPSSlider.getValue());
+                    insertionSortImage.startSort();
+                    break;
+                case "Comb Sort":
+                    CombSortImage combSortImage = new CombSortImage();
+                    combSortImage.setImagePath(path);
+                    combSortImage.setFrameRate(FPSSlider.getValue());
+                    combSortImage.startSort();
                     break;
                 default:
                     JOptionPane.showMessageDialog(this, "Metodo indisponivel nessa versão", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -227,6 +291,11 @@ public class MainFrame extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_SelecImageBtnActionPerformed
+
+    private void FPSSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_FPSSliderStateChanged
+        int fps = FPSSlider.getValue();
+        FPSShowLabel.setText(fps + " FPS");
+    }//GEN-LAST:event_FPSSliderStateChanged
     
     private boolean verifyExtension(String path, String extension) {
         int lastDotIndex = path.lastIndexOf('.');
@@ -285,6 +354,9 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonPanel;
     private javax.swing.JButton ExitBtn;
+    private javax.swing.JPanel FPSPanel;
+    private javax.swing.JLabel FPSShowLabel;
+    private javax.swing.JSlider FPSSlider;
     private javax.swing.JTextField ImagePathInput;
     private javax.swing.JPanel ImageSelectPanel;
     private javax.swing.JPanel LayoutPanel;

@@ -17,7 +17,7 @@ import processingPrograms.IprocessingImageSort;
  *
  * @author erik
  */
-public class BubbleSortImage extends PApplet implements IprocessingImageSort{
+public class InsertionSortImage extends PApplet implements IprocessingImageSort{
     
     private String ImagePath;
     private int imgHeight;
@@ -26,8 +26,8 @@ public class BubbleSortImage extends PApplet implements IprocessingImageSort{
     private PImage img;
     private PImage sortedImg;
     
-    private int i = 0;
-    
+    private int i = 1;
+
     public void setImagePath(String ImagePath) {
         this.ImagePath = ImagePath;
         try {
@@ -47,7 +47,7 @@ public class BubbleSortImage extends PApplet implements IprocessingImageSort{
     @Override
     public void startSort() {
         PApplet.main(new String[] {
-            "processingPrograms.BubbleSortImage", 
+            "processingPrograms.InsertionSortImage", 
             ImagePath, 
             String.valueOf(this.imgWidth),
             String.valueOf(this.imgHeight),
@@ -79,17 +79,20 @@ public class BubbleSortImage extends PApplet implements IprocessingImageSort{
     @Override
     public void draw() {
         int n = img.pixels.length;
-        for (int frame = 0; frame < 1; frame++) {
-            if (i < n-1) {
-                for (int j = 0; j < n-i-1; j++) {
-                    if ((sortedImg.pixels[j]) > (sortedImg.pixels[j+1])) {
-                        int temp = sortedImg.pixels[j];
-                        sortedImg.pixels[j] = sortedImg.pixels[j+1];
-                        sortedImg.pixels[j+1] = temp;
-                    }
-                }
-                i++;
+        
+        if (i < n) {
+            
+            int key = sortedImg.pixels[i];
+            int j = i-1;
+            
+            while (j >= 0 && sortedImg.pixels[j] > key) {
+                sortedImg.pixels[j+1] = sortedImg.pixels[j];
+                j--;
             }
+            
+            sortedImg.pixels[j+1] = key; 
+            
+            i++;
         }
         
         sortedImg.updatePixels();
